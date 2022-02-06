@@ -7,8 +7,25 @@ project(clipboardinspector)
 
 include(FeatureSummary)
 
+set(RELEASE_SERVICE_VERSION_MAJOR "1")
+set(RELEASE_SERVICE_VERSION_MINOR "0")
+set(RELEASE_SERVICE_VERSION_MICRO "0")
+set(RELEASE_SERVICE_VERSION "${RELEASE_SERVICE_VERSION_MAJOR}.${RELEASE_SERVICE_VERSION_MINOR}.${RELEASE_SERVICE_VERSION_MICRO}")
+
+# Find includes in corresponding build directories
+set(CMAKE_INCLUDE_CURRENT_DIR ON)
+# Instruct CMake to create code from Qt designer ui files
+set(CMAKE_AUTOUIC ON)
+set(CMAKE_CXX_STANDARD_REQUIRED ON)
+set(CMAKE_CXX_STANDARD 17)
+# Instruct CMake to run moc automatically when needed.
+set(CMAKE_AUTOMOC ON)
+set(CMAKE_AUTORCC ON)
+
 set(QT5_MIN_VERSION 5.15)
 set(KF5_MIN_VERSION 5.65)
+
+project(clipboardinspector VERSION ${RELEASE_SERVICE_VERSION})
 
 find_package(ECM ${KF5_MIN_VERSION} REQUIRED NO_MODULE)
 

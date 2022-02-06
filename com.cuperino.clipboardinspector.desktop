@@ -3,7 +3,7 @@
 [Desktop Entry]
 Name=clipboardinspector
 Comment=Clipboard metadata inspector
-Version=1.0
+Version=1.0.0
 Exec=clipboardinspector
 Icon=edit-paste
 Type=Application
