@@ -3,11 +3,11 @@
 
 cmake_minimum_required(VERSION 3.16)
 
-project(pasteanalyzer)
+project(clipboardinspector)
 
 include(FeatureSummary)
 
-set(QT5_MIN_VERSION 5.12)
+set(QT5_MIN_VERSION 5.15)
 set(KF5_MIN_VERSION 5.65)
 
 find_package(ECM ${KF5_MIN_VERSION} REQUIRED NO_MODULE)
@@ -26,7 +26,7 @@ find_package(KF5 ${KF5_MIN_VERSION} REQUIRED COMPONENTS Kirigami2 I18n SyntaxHig
 
 add_subdirectory(src)
 
-install(PROGRAMS com.cuperino.pasteanalyzer.desktop DESTINATION ${KDE_INSTALL_APPDIR})
-install(FILES com.cuperino.pasteanalyzer.metainfo.xml DESTINATION ${KDE_INSTALL_METAINFODIR})
+install(PROGRAMS com.cuperino.clipboardinspector.desktop DESTINATION ${KDE_INSTALL_APPDIR})
+install(FILES com.cuperino.clipboardinspector.metainfo.xml DESTINATION ${KDE_INSTALL_METAINFODIR})
 
 feature_summary(WHAT ALL INCLUDE_QUIET_PACKAGES FATAL_ON_MISSING_REQUIRED_PACKAGES)
