@@ -1,9 +1,12 @@
 <!--
     SPDX-License-Identifier: CC0-1.0
-    SPDX-FileCopyrightText: %{CURRENT_YEAR} %{AUTHOR} <%{EMAIL}>
+    SPDX-FileCopyrightText: 2022 Javier O. Cordero Pérez <javiercorderoperez@gmail.com>
 -->
 <RCC>
     <qresource prefix="/">
         <file alias="main.qml">contents/ui/main.qml</file>
+        <file alias="AboutPage.qml">contents/ui/AboutPage.qml</file>
+        <file>contents/images/icon.svg</file>
+        <file>qtquickcontrols2.conf</file>
     </qresource>
 </RCC>

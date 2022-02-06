@@ -1,9 +1,9 @@
-# SPDX-FileCopyrightText: %{CURRENT_YEAR} %{AUTHOR} <%{EMAIL}>
-# SPDX-License-Identifier: BSD-3-Clause
+# SPDX-License-Identifier: GPL-2.0-or-later
+# SPDX-FileCopyrightText: 2022 Javier O. Cordero Pérez <javiercorderoperez@gmail.com>
 
 cmake_minimum_required(VERSION 3.16)
 
-project(testapp)
+project(pasteanalyzer)
 
 include(FeatureSummary)
 
@@ -22,11 +22,11 @@ include(ECMGenerateHeaders)
 include(ECMPoQmTools)
 
 find_package(Qt5 ${QT5_MIN_VERSION} REQUIRED COMPONENTS Core Gui Qml QuickControls2 Svg)
-find_package(KF5 ${KF5_MIN_VERSION} REQUIRED COMPONENTS Kirigami2 I18n)
+find_package(KF5 ${KF5_MIN_VERSION} REQUIRED COMPONENTS Kirigami2 I18n SyntaxHighlighting)
 
 add_subdirectory(src)
 
-install(PROGRAMS org.kde.testapp.desktop DESTINATION ${KDE_INSTALL_APPDIR})
-install(FILES org.kde.testapp.metainfo.xml DESTINATION ${KDE_INSTALL_METAINFODIR})
+install(PROGRAMS com.cuperino.pasteanalyzer.desktop DESTINATION ${KDE_INSTALL_APPDIR})
+install(FILES com.cuperino.pasteanalyzer.metainfo.xml DESTINATION ${KDE_INSTALL_METAINFODIR})
 
 feature_summary(WHAT ALL INCLUDE_QUIET_PACKAGES FATAL_ON_MISSING_REQUIRED_PACKAGES)
