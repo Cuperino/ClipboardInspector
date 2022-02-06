@@ -5,7 +5,7 @@ Name=clipboardinspector
 Comment=Clipboard metadata inspector
 Version=1.0.0
 Exec=clipboardinspector
-Icon=edit-paste
+Icon=com.cuperino.qprompt
 Type=Application
 Terminal=false
 # Add an actual main category here (and possibly applicable additional ones)
