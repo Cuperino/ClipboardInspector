@@ -1,13 +1,14 @@
+#!/usr/bin/env xdg-open
 # SPDX-License-Identifier: CC0-1.0
 # SPDX-FileCopyrightText: 2022 Javier O. Cordero Pérez <javiercorderoperez@gmail.com>
 [Desktop Entry]
 Name=clipboardinspector
 Comment=Clipboard metadata inspector
-Version=1.0.0
 Exec=clipboardinspector
+Version=1.5
 Icon=com.cuperino.clipboardinspector
 Type=Application
 Terminal=false
-# Add an actual main category here (and possibly applicable additional ones)
-#   https://specifications.freedesktop.org/menu-spec/latest/apa.html#main-category-registry
-Categories=Development;Utility
+Categories=Development
+URL=https://github.com/Cuperino/ClipboardInspector
+Keywords=clipboard;inspector;copy;paste;
