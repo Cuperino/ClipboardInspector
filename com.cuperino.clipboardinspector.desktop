@@ -5,7 +5,7 @@
 Name=clipboardinspector
 Comment=Clipboard metadata inspector
 Exec=clipboardinspector
-Version=1.5
+Version=1.2
 Icon=com.cuperino.clipboardinspector
 Type=Application
 Terminal=false
