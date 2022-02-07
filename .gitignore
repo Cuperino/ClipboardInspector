@@ -51,6 +51,7 @@ Makefile
 **/build
 *.flatpak-builder*
 /dist/Snapcraft/*.snap
+.clang-format
 
 # Web Assembly Build
 **/build_wasm/QPrompt.wasm

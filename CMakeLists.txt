@@ -3,10 +3,6 @@
 
 cmake_minimum_required(VERSION 3.16)
 
-project(clipboardinspector)
-
-include(FeatureSummary)
-
 set(RELEASE_SERVICE_VERSION_MAJOR "1")
 set(RELEASE_SERVICE_VERSION_MINOR "0")
 set(RELEASE_SERVICE_VERSION_MICRO "0")
@@ -31,14 +27,23 @@ find_package(ECM ${KF5_MIN_VERSION} REQUIRED NO_MODULE)
 
 set(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} ${ECM_MODULE_PATH})
 
-include(KDEInstallDirs)
-include(KDECMakeSettings)
+if (WIN32 OR UNIX) # AND NOT ANDROID
+    include(KDEInstallDirs)
+    include(KDECMakeSettings)
+    include(ECMInstallIcons)
+    include(ECMAddAppIcon)
+endif()
 include(KDECompilerSettings NO_POLICY_SCOPE)
+include(KDEClangFormat)
+include(ECMQtDeclareLoggingCategory)
 include(ECMSetupVersion)
+include(ECMSourceVersionControl)
 include(ECMGenerateHeaders)
 include(ECMPoQmTools)
+include(FeatureSummary)
 
-find_package(Qt5 ${QT5_MIN_VERSION} REQUIRED COMPONENTS Core Gui Qml QuickControls2 Svg)
+find_package(Qt5 ${QT5_MIN_VERSION} REQUIRED NO_MODULE COMPONENTS Core Gui Qml QuickControls2 Svg)
+find_package(Qt5 ${QT5_MIN_VERSION} NO_MODULE COMPONENTS QmlImportScanner QuickCompiler)
 find_package(KF5 ${KF5_MIN_VERSION} REQUIRED COMPONENTS Kirigami2 I18n SyntaxHighlighting)
 
 add_subdirectory(src)
