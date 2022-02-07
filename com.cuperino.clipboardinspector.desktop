@@ -5,10 +5,9 @@
 Name=clipboardinspector
 Comment=Clipboard metadata inspector
 Exec=clipboardinspector
-Version=1.2
+Version=1.0
 Icon=com.cuperino.clipboardinspector
 Type=Application
 Terminal=false
 Categories=Development
-URL=https://github.com/Cuperino/ClipboardInspector
 Keywords=clipboard;inspector;copy;paste;
