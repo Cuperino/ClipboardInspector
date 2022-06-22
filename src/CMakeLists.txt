@@ -62,7 +62,6 @@ target_link_libraries(${PROJECT_NAME}
     Qt5::Quick
     Qt5::QuickControls2
     Qt5::Svg
-    KF5::KCoreAddons
     KF5::I18n
     KF5::SyntaxHighlighting
     KF5::Kirigami2
