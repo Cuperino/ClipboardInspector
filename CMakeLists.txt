@@ -44,7 +44,7 @@ include(FeatureSummary)
 
 find_package(Qt5 ${QT5_MIN_VERSION} REQUIRED NO_MODULE COMPONENTS Core Gui Qml QuickControls2 Svg)
 find_package(Qt5 ${QT5_MIN_VERSION} NO_MODULE COMPONENTS QmlImportScanner QuickCompiler)
-find_package(KF5 ${KF5_MIN_VERSION} REQUIRED COMPONENTS Kirigami2 I18n SyntaxHighlighting)
+find_package(KF5 ${KF5_MIN_VERSION} REQUIRED COMPONENTS KCoreAddons I18n SyntaxHighlighting Kirigami2)
 
 add_subdirectory(src)
 
