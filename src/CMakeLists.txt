@@ -1,6 +1,10 @@
 # SPDX-License-Identifier: GPL-2.0-or-later
 # SPDX-FileCopyrightText: 2022 Javier O. Cordero Pérez <javiercorderoperez@gmail.com>
 
+#include(ECMPoQmTools)
+#ecm_create_qm_loader(qprompt_QM_LOADER ../locale/qprompt.pot)
+
+
 set(clipboardinspector_SRCS
     main.cpp
     document/documenthandler.cpp
@@ -9,12 +13,44 @@ set(clipboardinspector_HDRS
     document/documenthandler.h
 )
 
-# Qt5QuickCompiler is an optional dependency. Script must check that it is present before attempting to use
-if (Qt5QuickCompiler_FOUND)
-    qtquick_compiler_add_resources(clipboardinspector_QML_SRCS resources.qrc)
-else ()
-    set(clipboardinspector_QML_SRCS resources.qrc)
+set(qprompt_ASSETS
+    resources.qrc
+)
+
+if (NOT APPLE AND NOT ANDROID)
+    set(ICONS_FOLDER ${CMAKE_CURRENT_SOURCE_DIR}/icons/hicolor)
+    set(RASTER_ICONS
+        ${ICONS_FOLDER}/16-apps-com.cuperino.clipboardinspector.png
+        ${ICONS_FOLDER}/32-apps-com.cuperino.clipboardinspector.png
+        ${ICONS_FOLDER}/48-apps-com.cuperino.clipboardinspector.png
+        ${ICONS_FOLDER}/64-apps-com.cuperino.clipboardinspector.png
+        ${ICONS_FOLDER}/128-apps-com.cuperino.clipboardinspector.png
+        ${ICONS_FOLDER}/256-apps-com.cuperino.clipboardinspector.png
+        ${ICONS_FOLDER}/512-apps-com.cuperino.clipboardinspector.png
+        # Commenting 1024 sized icon out because although ECM does support it, Flatpak does not...
+        # ${ICONS_FOLDER}/1024-apps-com.cuperino.clipboardinspector.png
+    )
+    set(VECTOR_ICON
+        ${ICONS_FOLDER}/sc-apps-com.cuperino.clipboardinspector.svg
+    )
+    ecm_install_icons(
+        ICONS
+            ${RASTER_ICONS}
+            ${VECTOR_ICON}
+        DESTINATION ${KDE_INSTALL_ICONDIR}
+        # THEME hicolor
+    )
+    ecm_add_app_icon(clipboardinspector_ICONS
+        ICONS ${RASTER_ICONS}
+    )
 endif()
+
+## Qt5QuickCompiler is an optional dependency. Script must check that it is present before attempting to use
+#if (Qt${QT_VERSION_MAJOR}QuickCompiler_FOUND)
+    #qtquick_compiler_add_resources(clipboardinspector_QML_SRCS resources.qrc)
+#else ()
+set(clipboardinspector_QML_SRCS resources.qrc)
+#endif()
 
 if(ANDROID)
     add_library(${PROJECT_NAME}
@@ -56,42 +92,21 @@ else() # UNIX
 endif()
 
 target_link_libraries(${PROJECT_NAME}
-    Qt5::Core
-    Qt5::Gui
-    Qt5::Qml
-    Qt5::Quick
-    Qt5::QuickControls2
-    Qt5::Svg
+    Qt${QT_VERSION_MAJOR}::Core
+    Qt${QT_VERSION_MAJOR}::Gui
+    Qt${QT_VERSION_MAJOR}::Qml
+    Qt${QT_VERSION_MAJOR}::Quick
+    Qt${QT_VERSION_MAJOR}::QuickControls2
+    Qt${QT_VERSION_MAJOR}::Svg
     KF5::I18n
-    KF5::SyntaxHighlighting
     KF5::Kirigami2
+    KF5::SyntaxHighlighting
+    KF5::CoreAddons
 )
-
-if (NOT APPLE AND NOT ANDROID)
-    set(ICONS_FOLDER ${CMAKE_CURRENT_SOURCE_DIR}/icons/hicolor)
-    set(RASTER_ICONS
-        ${ICONS_FOLDER}/16-apps-com.cuperino.clipboardinspector.png
-        ${ICONS_FOLDER}/32-apps-com.cuperino.clipboardinspector.png
-        ${ICONS_FOLDER}/48-apps-com.cuperino.clipboardinspector.png
-        ${ICONS_FOLDER}/64-apps-com.cuperino.clipboardinspector.png
-        ${ICONS_FOLDER}/128-apps-com.cuperino.clipboardinspector.png
-        ${ICONS_FOLDER}/256-apps-com.cuperino.clipboardinspector.png
-        ${ICONS_FOLDER}/512-apps-com.cuperino.clipboardinspector.png
-        # Commenting 1024 sized icon out because although ECM does support it, Flatpak does not...
-        # ${ICONS_FOLDER}/1024-apps-com.cuperino.clipboardinspector.png
-    )
-    set(VECTOR_ICON
-        ${ICONS_FOLDER}/sc-apps-com.cuperino.clipboardinspector.svg
-    )
-    ecm_install_icons(
-        ICONS
-            ${RASTER_ICONS}
-            ${VECTOR_ICON}
-        DESTINATION ${KDE_INSTALL_ICONDIR}
-        # THEME hicolor
-    )
-    ecm_add_app_icon(clipboardinspector_ICONS
-        ICONS ${RASTER_ICONS}
+if (KF5Crash_FOUND)
+    add_definitions(-DKF5Crash_FOUND)
+    target_link_libraries(${PROJECT_NAME} LINK_PRIVATE
+        KF5::Crash
     )
 endif()
 
@@ -112,8 +127,56 @@ if(ANDROID OR APPLE OR WIN32 OR IOS OR WASM)
 endif()
 
 # Get static QML. Gets ignored if not a static build
-if (Qt5QmlImportScanner_FOUND)
-    qt5_import_qml_plugins(${PROJECT_NAME})
-endif()
+#if (Qt5QmlImportScanner_FOUND)
+#    qt5_import_qml_plugins(${PROJECT_NAME})
+#endif()
 
-install(TARGETS ${PROJECT_NAME} ${KDE_INSTALL_TARGETS_DEFAULT_ARGS})
+
+## Include KI18N translations
+#FIND_PROGRAM(GETTEXT_MSGFMT_EXECUTABLE msgfmt)
+#IF(NOT GETTEXT_MSGFMT_EXECUTABLE)
+#   MESSAGE(
+#"------
+#                NOTE: msgfmt not found. Translations will *not* be installed
+#------")
+#ELSE(NOT GETTEXT_MSGFMT_EXECUTABLE)
+
+#   SET(catalogname qprompt)
+
+#   FILE(GLOB PO_FILES ../po/*.po)
+#   SET(GMO_FILES)
+
+#   FOREACH(_poFile ${PO_FILES})
+#       GET_FILENAME_COMPONENT(_poFileName ${_poFile} NAME)
+#       STRING(REGEX REPLACE "^${catalogname}_?" "" _langCode ${_poFileName} )
+#       STRING(REGEX REPLACE "\\.po$" "" _langCode ${_langCode} )
+
+#       IF( _langCode )
+#           GET_FILENAME_COMPONENT(_lang ${_poFile} NAME_WE)
+#           SET(_gmoFile ${CMAKE_CURRENT_BINARY_DIR}/${_lang}.gmo)
+
+#           ADD_CUSTOM_COMMAND(TARGET ${PROJECT_NAME} # ${_gmoFile}
+#               COMMAND ${GETTEXT_MSGFMT_EXECUTABLE} --check -o ${_gmoFile} ${_poFile}
+#               DEPENDS ${_poFile})
+#           INSTALL(FILES ${_gmoFile} DESTINATION ${LOCALE_INSTALL_DIR}/${_langCode}/LC_MESSAGES/ RENAME ${catalogname}.mo)
+#           LIST(APPEND GMO_FILES ${_gmoFile})
+#       ENDIF( _langCode )
+
+#   ENDFOREACH(_poFile ${PO_FILES})
+
+#   #ADD_CUSTOM_TARGET(translations ALL DEPENDS ${GMO_FILES})
+
+#ENDIF(NOT GETTEXT_MSGFMT_EXECUTABLE)
+
+
+if (WIN32 OR UNIX) # AND NOT ANDROID)
+    # install(FILES images/clipboardinspector.svg DESTINATION ${KDE_INSTALL_FULL_ICONDIR}/hicolor/scalable/apps)
+    # install(FILES images/clipboardinspector.png DESTINATION ${KDE_INSTALL_FULL_ICONDIR}/hicolor/1024x1024/apps)
+    install(FILES com.cuperino.clipboardinspector.appdata.xml DESTINATION ${KDE_INSTALL_METAINFODIR})
+    install(PROGRAMS com.cuperino.clipboardinspector.desktop DESTINATION ${KDE_INSTALL_APPDIR})
+    if (APPLE)
+        install(TARGETS ${PROJECT_NAME} ${KDE_INSTALL_TARGETS_DEFAULT_ARGS} BUNDLE DESTINATION .)
+    else()
+        install(TARGETS ${PROJECT_NAME} ${KDE_INSTALL_TARGETS_DEFAULT_ARGS})
+    endif()
+endif()
