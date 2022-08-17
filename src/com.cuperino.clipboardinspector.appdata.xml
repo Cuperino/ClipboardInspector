@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+  SPDX-License-Identifier: FSFAP
+  SPDX-FileCopyrightText: 2022 Javier O. Cordero Pérez <javiercorderoperez@gmail.com>
+ -->
+<component type="desktop-application">
+  <id>com.cuperino.clipboardinspector</id>
+  <name>Clipboard Inspector</name>
+  <summary>Decodes clipboard data for visual inspection</summary>
+  <url type="homepage">https://github.com/Cuperino/ClipboardInspector</url>
+  <url type="translate">https://l10n.cuperino.com</url>
+  <url type="bugtracker">https://github.com/Cuperino/ClipboardInspector/issues</url>
+  <metadata_license>CC-BY-4.0</metadata_license>
+  <project_license>GPL-2.0-or-later"</project_license>
+  <update_contact>javiercorderoperez@gmail.com</update_contact>
+  <developer_name>Javier O. Cordero Pérez</developer_name>
+  <description>
+    <p>Paste contents from your clipboard to visualize their metadata.</p>
+  </description>
+<!--   <requires>
+    <display_length compare="gte">160</display_length>
+  </requires>
+  <recommends>
+    <display_length compare="gte">xsmall</display_length>
+    <display_length compare="lte">xlarge</display_length>
+  </recommends>
+  <supports>
+    <control>pointing</control>
+    <control>keyboard</control>
+    <control>touch</control>
+  </supports>
+ -->  <!-- <content_rating type="oars-1.0" /> -->
+<!--   <kudos>
+    <kudo>HiDpiIcon</kudo>
+    <kudo>HighContrast</kudo>
+    <kudo>ModernToolkit</kudo>
+  </kudos>
+ -->
+</component>
