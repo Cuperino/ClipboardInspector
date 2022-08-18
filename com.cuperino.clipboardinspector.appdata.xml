@@ -11,11 +11,11 @@
   <url type="translate">https://l10n.cuperino.com</url>
   <url type="bugtracker">https://github.com/Cuperino/ClipboardInspector/issues</url>
   <metadata_license>CC-BY-4.0</metadata_license>
-  <project_license>GPL-2.0-or-later"</project_license>
+  <project_license>GPL-2.0-or-later</project_license>
   <update_contact>javiercorderoperez@gmail.com</update_contact>
   <developer_name>Javier O. Cordero Pérez</developer_name>
   <description>
-    <p>Paste contents from your clipboard to visualize their metadata.</p>
+    <p>Native clipboard inspection app for efficient developers. Paste content from your clipboard to inspect its metadata. Runs on Windows, macOS, Linux, mobile Linux, and Android.</p>
   </description>
 <!--   <requires>
     <display_length compare="gte">160</display_length>
