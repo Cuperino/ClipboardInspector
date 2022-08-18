@@ -93,6 +93,11 @@ find_package(QT NAMES Qt6 Qt5 REQUIRED COMPONENTS Core)
 find_package(Qt${QT_VERSION_MAJOR} ${QT5_MIN_VERSION} REQUIRED NO_MODULE COMPONENTS Core Gui Qml QuickControls2 Svg)
 find_package(Qt${QT_VERSION_MAJOR} ${QT5_MIN_VERSION} NO_MODULE COMPONENTS QmlImportScanner QuickCompiler)
 find_package(KF5 ${KF5_MIN_VERSION} REQUIRED COMPONENTS Kirigami2 I18n CoreAddons SyntaxHighlighting)
+find_package(KF5Crash ${KF5_MIN_VERSION} CONFIG QUIET)
+    set_package_properties(KF5Crash PROPERTIES
+    DESCRIPTION "Graceful handling of application crashes."
+    TYPE OPTIONAL
+)
 
 if (WIN32 OR UNIX) # AND NOT ANDROID
     include(KDEInstallDirs)

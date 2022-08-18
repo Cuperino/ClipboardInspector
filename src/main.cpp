@@ -11,16 +11,27 @@
 #include <QtQml>
 #include "document/documenthandler.h"
 
+#if defined(KF5Crash_FOUND)
+#include <KCrash>
+#endif
+
 #define PROGRAM_URI "com.cuperino.clipboardinspector"
 
 Q_DECL_EXPORT int main(int argc, char *argv[])
 {
     QGuiApplication::setAttribute(Qt::AA_EnableHighDpiScaling);
     QApplication app(argc, argv);
-    app.setWindowIcon(QIcon(":/contents/images/icon.svg"));
-    QCoreApplication::setOrganizationName("Cuperino");
-    QCoreApplication::setOrganizationDomain(PROGRAM_URI);
-    QCoreApplication::setApplicationName("Clipboard Inspector");
+
+#if defined(KF5Crash_FOUND)
+    KCrash::initialize();
+    KCrash::setFlags(KCrash::AutoRestart);
+#endif
+
+    app.setWindowIcon(QIcon(QString::fromStdString(":/contents/icons/clipboardinspector.png")));
+    QCoreApplication::setOrganizationName(QString::fromStdString("Cuperino"));
+    QCoreApplication::setOrganizationDomain(QString::fromStdString(PROGRAM_URI));
+    QCoreApplication::setApplicationName(QString::fromStdString("Clipboard Inspector"));
+
 
     qmlRegisterType<DocumentHandler>("com.cuperino.clipboardinspector.document", 1, 0, "DocumentHandler");
 
