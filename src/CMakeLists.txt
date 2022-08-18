@@ -103,12 +103,12 @@ target_link_libraries(${PROJECT_NAME}
     KF5::SyntaxHighlighting
     KF5::CoreAddons
 )
-if (KF5Crash_FOUND)
-    add_definitions(-DKF5Crash_FOUND)
-    target_link_libraries(${PROJECT_NAME} LINK_PRIVATE
-        KF5::Crash
-    )
-endif()
+#if (KF5Crash_FOUND)
+#    add_definitions(-DKF5Crash_FOUND)
+#    target_link_libraries(${PROJECT_NAME} LINK_PRIVATE
+#        KF5::Crash
+#    )
+#endif()
 
 # Copy icons that are not font based
 if(ANDROID OR APPLE OR WIN32 OR IOS OR WASM)
