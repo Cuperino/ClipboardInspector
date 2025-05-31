@@ -1,5 +1,5 @@
 # SPDX-License-Identifier: GPL-2.0-or-later
-# SPDX-FileCopyrightText: 2022 Javier O. Cordero Pérez <javiercorderoperez@gmail.com>
+# SPDX-FileCopyrightText: 2022, 2025 Javier O. Cordero Pérez <javiercorderoperez@gmail.com>
 
 #include(ECMPoQmTools)
 #ecm_create_qm_loader(qprompt_QM_LOADER ../locale/qprompt.pot)
@@ -98,11 +98,11 @@ target_link_libraries(${PROJECT_NAME}
     Qt${QT_VERSION_MAJOR}::Quick
     Qt${QT_VERSION_MAJOR}::QuickControls2
     Qt${QT_VERSION_MAJOR}::Svg
-    KF5::I18n
-    KF5::Kirigami2
-    KF5::SyntaxHighlighting
-    KF5::CoreAddons
+    KF6::CoreAddons
+    KF6::Kirigami
+    KF6SyntaxHighlighting
 )
+
 #if (KF5Crash_FOUND)
 #    add_definitions(-DKF5Crash_FOUND)
 #    target_link_libraries(${PROJECT_NAME} LINK_PRIVATE
@@ -110,64 +110,10 @@ target_link_libraries(${PROJECT_NAME}
 #    )
 #endif()
 
-# Copy icons that are not font based
-if(ANDROID OR APPLE OR WIN32 OR IOS OR WASM)
-    # Breeze icons names can be found at https://cdn.kde.org/breeze-icons/icons.html
-    kirigami_package_breeze_icons(ICONS
-        application-exit
-        document-new
-        document-save
-        edit-copy
-        edit-paste
-        edit-undo
-        edit-redo
-        help-about
-        tools-report-bug
-    )
-endif()
-
 # Get static QML. Gets ignored if not a static build
 #if (Qt5QmlImportScanner_FOUND)
 #    qt5_import_qml_plugins(${PROJECT_NAME})
 #endif()
-
-
-## Include KI18N translations
-#FIND_PROGRAM(GETTEXT_MSGFMT_EXECUTABLE msgfmt)
-#IF(NOT GETTEXT_MSGFMT_EXECUTABLE)
-#   MESSAGE(
-#"------
-#                NOTE: msgfmt not found. Translations will *not* be installed
-#------")
-#ELSE(NOT GETTEXT_MSGFMT_EXECUTABLE)
-
-#   SET(catalogname qprompt)
-
-#   FILE(GLOB PO_FILES ../po/*.po)
-#   SET(GMO_FILES)
-
-#   FOREACH(_poFile ${PO_FILES})
-#       GET_FILENAME_COMPONENT(_poFileName ${_poFile} NAME)
-#       STRING(REGEX REPLACE "^${catalogname}_?" "" _langCode ${_poFileName} )
-#       STRING(REGEX REPLACE "\\.po$" "" _langCode ${_langCode} )
-
-#       IF( _langCode )
-#           GET_FILENAME_COMPONENT(_lang ${_poFile} NAME_WE)
-#           SET(_gmoFile ${CMAKE_CURRENT_BINARY_DIR}/${_lang}.gmo)
-
-#           ADD_CUSTOM_COMMAND(TARGET ${PROJECT_NAME} # ${_gmoFile}
-#               COMMAND ${GETTEXT_MSGFMT_EXECUTABLE} --check -o ${_gmoFile} ${_poFile}
-#               DEPENDS ${_poFile})
-#           INSTALL(FILES ${_gmoFile} DESTINATION ${LOCALE_INSTALL_DIR}/${_langCode}/LC_MESSAGES/ RENAME ${catalogname}.mo)
-#           LIST(APPEND GMO_FILES ${_gmoFile})
-#       ENDIF( _langCode )
-
-#   ENDFOREACH(_poFile ${PO_FILES})
-
-#   #ADD_CUSTOM_TARGET(translations ALL DEPENDS ${GMO_FILES})
-
-#ENDIF(NOT GETTEXT_MSGFMT_EXECUTABLE)
-
 
 if (WIN32 OR UNIX) # AND NOT ANDROID)
     # install(FILES images/clipboardinspector.svg DESTINATION ${KDE_INSTALL_FULL_ICONDIR}/hicolor/scalable/apps)

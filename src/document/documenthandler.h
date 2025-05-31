@@ -1,6 +1,6 @@
 /*
     SPDX-License-Identifier: GPL-2.0-or-later
-    SPDX-FileCopyrightText: 2022 Javier O. Cordero Pérez <javiercorderoperez@gmail.com>
+    SPDX-FileCopyrightText: 2022, 2025 Javier O. Cordero Pérez <javiercorderoperez@gmail.com>
 */
 
 #ifndef DOCUMENTHANDLER_H
@@ -8,8 +8,11 @@
 
 #include <QFont>
 #include <QObject>
+#include <QQmlEngine>
 #include <QTextCursor>
 #include <QUrl>
+#include <QTextDocument>
+#include <QQuickTextDocument>
 
 QT_BEGIN_NAMESPACE
 class QTextDocument;
@@ -19,7 +22,8 @@ QT_END_NAMESPACE
 class DocumentHandler : public QObject
 {
     Q_OBJECT
-    
+    QML_ELEMENT
+
     Q_PROPERTY(QQuickTextDocument *mimeText READ mimeText WRITE setMimeText NOTIFY mimeTextChanged)
     Q_PROPERTY(QQuickTextDocument *code READ code WRITE setCode NOTIFY codeChanged)
     Q_PROPERTY(QQuickTextDocument *output READ output WRITE setOutput NOTIFY outputChanged)

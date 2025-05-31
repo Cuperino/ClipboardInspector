@@ -1,11 +1,9 @@
 /*
     SPDX-License-Identifier: GPL-2.0-or-later
-    SPDX-FileCopyrightText: 2022 Javier O. Cordero Pérez <javiercorderoperez@gmail.com>
+    SPDX-FileCopyrightText: 2022, 2025 Javier O. Cordero Pérez <javiercorderoperez@gmail.com>
 */
 
 #include "documenthandler.h"
-
-#include <vector>
 
 #include <QFile>
 #include <QFileInfo>
@@ -15,23 +13,21 @@
 #include <QQmlFileSelector>
 #include <QQuickTextDocument>
 #include <QTextCharFormat>
-#include <QTextCodec>
 #include <QTextDocument>
 #include <QTextBlock>
-#include <QApplication>
+#include <QGuiApplication>
 #include <QClipboard>
 #include <QMimeData>
 #include <QDebug>
 
-#include <KI18n/KLocalizedString>
-
 DocumentHandler::DocumentHandler(QObject *parent)
-: QObject(parent)
-, m_code(nullptr)
-, m_output(nullptr)
-, m_cursorPosition(-1)
-, m_selectionStart(0)
-, m_selectionEnd(0)
+    : QObject(parent)
+    , m_code(nullptr)
+    , m_output(nullptr)
+    , m_mimeText(nullptr)
+    , m_cursorPosition(-1)
+    , m_selectionStart(0)
+    , m_selectionEnd(0)
 {
 }
 
@@ -75,7 +71,7 @@ void DocumentHandler::setOutput(QQuickTextDocument *document)
     if (m_output) {
         connect(m_output->textDocument(), &QTextDocument::modificationChanged, this, &DocumentHandler::modifiedChanged);
     }
-    emit codeChanged();
+    emit outputChanged();
 }
 
 void DocumentHandler::setMimeText(QQuickTextDocument *document)
@@ -89,7 +85,7 @@ void DocumentHandler::setMimeText(QQuickTextDocument *document)
     if (m_mimeText) {
         connect(m_mimeText->textDocument(), &QTextDocument::modificationChanged, this, &DocumentHandler::modifiedChanged);
     }
-    emit codeChanged();
+    emit mimeTextChanged();
 }
 
 int DocumentHandler::cursorPosition() const
@@ -262,7 +258,7 @@ void DocumentHandler::setModified(bool m)
 
 QString DocumentHandler::mimeType() const
 {
-    const QClipboard *clipboard = QApplication::clipboard();
+    const QClipboard *clipboard = QGuiApplication::clipboard();
     const QMimeData *mimeData = clipboard->mimeData();
     return mimeData->formats().join(", ");
 }
@@ -284,14 +280,14 @@ void DocumentHandler::paste()
     mimeCursor.movePosition(QTextCursor::Start);
     mimeCursor.movePosition(QTextCursor::End, QTextCursor::KeepAnchor);
 
-    const QClipboard *clipboard = QApplication::clipboard();
+    const QClipboard *clipboard = QGuiApplication::clipboard();
     const QMimeData *mimeData = clipboard->mimeData();
 //     emit mimeDataUpdated();
 
     mimeCursor.insertText(mimeData->formats().join("; "));
     if (mimeData->hasImage()) {
         codeCursor.insertText(mimeData->text());
-        outputCursor.insertText(i18n("Image preview not implemented"));
+        outputCursor.insertText(tr("Image preview not implemented"));
     }
     else if (mimeData->hasHtml()) {
         codeCursor.insertText(mimeData->html());
@@ -301,8 +297,8 @@ void DocumentHandler::paste()
         codeCursor.insertText(mimeData->text());
         outputCursor.insertText(mimeData->text());
     } else {
-        codeCursor.insertText(i18n("Unknown MIME"));
-        outputCursor.insertText(i18n("Cannot display data"));
+        codeCursor.insertText(tr("Unknown MIME"));
+        outputCursor.insertText(tr("Cannot display data"));
     }
     codeCursor.endEditBlock();
     outputCursor.endEditBlock();
@@ -311,7 +307,7 @@ void DocumentHandler::paste()
 
 void DocumentHandler::copy()
 {
-    QClipboard *clipboard = QApplication::clipboard();
+    QClipboard *clipboard = QGuiApplication::clipboard();
 
     QTextCursor cursor = this->codeCursor();
     cursor.movePosition(QTextCursor::Start);

@@ -1,40 +1,41 @@
 /*
     SPDX-License-Identifier: GPL-2.0-or-later
-    SPDX-FileCopyrightText: 2022 Javier O. Cordero Pérez <javiercorderoperez@gmail.com>
+    SPDX-FileCopyrightText: 2022, 2025 Javier O. Cordero Pérez <javiercorderoperez@gmail.com>
 */
 
-import QtQuick 2.13
-import QtQuick.Controls 2.13
-import QtQuick.Dialogs 1.2
-import QtQuick.Layouts 1.2
-import Qt.labs.settings 1.0
+import QtCore
+import QtQuick
+import QtQuick.Controls
+import QtQuick.Layouts
+import QtQuick.Dialogs
 
-import org.kde.kirigami 2.11 as Kirigami
-import org.kde.syntaxhighlighting 1.0
+import org.kde.kirigami as Kirigami
+import org.kde.syntaxhighlighting
 
-import com.cuperino.clipboardinspector.document 1.0
+import com.cuperino.clipboardinspector.document
 
 Kirigami.ApplicationWindow {
     id: root
 
-    readonly property string programTitle: i18n("Clipboard Inspector")
+    readonly property string programTitle: qsTr("Clipboard Inspector")
     readonly property bool readOnly: true
     readonly property int padding: 0
-    //property alias mimeType: document.mimeType
 
     function loadAboutPage() {
         root.pageStack.layers.clear()
         root.pageStack.layers.push(aboutPageComponent, {})
-//         root.pageStack.layers.push(aboutPageComponent, {aboutData: aboutData})
     }
     function paste() {
-        //code.text = "";
-        //output.text = "";
+        while (mime.canRedo || code.canRedo || output.canRedo) {
+            mime.redo()
+            code.redo();
+            output.redo();
+        }
         document.isNewFile = false
         document.paste();
     }
 
-    title: i18n("Cuperino's %1", root.programTitle)
+    title: qsTr("Cuperino's %1").arg(root.programTitle)
     minimumWidth: 291
     minimumHeight: minimumWidth
     width: 960
@@ -43,34 +44,32 @@ Kirigami.ApplicationWindow {
     globalDrawer: Kirigami.GlobalDrawer {
         title: root.programTitle
         titleIcon: "edit-paste"
-        isMenu: !root.isMobile
         actions: [
             Kirigami.Action {
-                text: i18n("&Save code")
+                text: qsTr("&Save Clipboard Contents")
                 enabled: !document.isNewFile
                 icon.name: "document-save"
                 shortcut: StandardKey.Save
                 onTriggered: saveDialog.open()
             },
             Kirigami.Action {
-                text: i18n("Abou&t") + " " + i18n("Clipboard Inspector") // + aboutData.displayName
-                iconName: "help-about"
+                text: qsTr("Abou&t") + " " + qsTr("Clipboard Inspector") // + aboutData.displayName
+                icon.name: "help-about"
                 onTriggered: loadAboutPage()
             },
             Kirigami.Action {
                 visible: !Kirigami.Settings.isMobile
-                text: i18n("&Quit")
-                iconName: "application-exit"
+                text: qsTr("&Quit")
+                icon.name: "application-exit"
                 shortcut: StandardKey.Quit
                 onTriggered: Qt.quit()
             }
         ]
     }
 
-    contextDrawer: Kirigami.ContextDrawer {
-        id: contextDrawer
-    }
+    contextDrawer: Kirigami.ContextDrawer {}
 
+    pageStack.globalToolBar.toolbarActionAlignment: Qt.AlignHCenter
     pageStack.initialPage: page
 
     Settings {
@@ -84,45 +83,42 @@ Kirigami.ApplicationWindow {
     Kirigami.Page {
         id: page
         title: root.programTitle
-        actions.main: Kirigami.Action {
-            text: i18n("Paste")
-            icon.name: "edit-paste"
-            tooltip: i18n("Paste and decompose clipboard contents")
-            shortcut: StandardKey.Paste
-            onTriggered: root.paste()
-        }
-        actions.left: Kirigami.Action {
-            text: i18n("Undo")
-            icon.name: "edit-undo"
-            enabled: code.canUndo && output.canUndo
-            shortcut: StandardKey.Undo
-            onTriggered: {
-                mime.undo()
-                code.undo()
-                output.undo()
-            }
-        }
-        actions.right: Kirigami.Action {
-            text: i18n("Redo")
-            icon.name: "edit-redo"
-            enabled: code.canRedo && output.canRedo
-            shortcut: StandardKey.Redo
-            onTriggered: {
-                mime.redo()
-                code.redo()
-                output.redo()
-            }
-        }
-        actions.contextualActions: [
+        actions: [
+            Kirigami.Action {
+                text: qsTr("Inspect Clipboard")
+                icon.name: "edit-paste"
+                tooltip: qsTr("Paste and decompose clipboard contents")
+                shortcut: StandardKey.Paste
+                onTriggered: root.paste()
+            },
+            Kirigami.Action {
+                text: qsTr("Previous")
+                icon.name: "edit-undo"
+                enabled: code.canUndo && output.canUndo
+                shortcut: StandardKey.Undo
+                onTriggered: {
+                    mime.undo()
+                    code.undo()
+                    output.undo()
+                }
+            },
+            Kirigami.Action {
+                text: qsTr("Next")
+                icon.name: "edit-redo"
+                enabled: code.canRedo && output.canRedo
+                shortcut: StandardKey.Redo
+                onTriggered: {
+                    mime.redo()
+                    code.redo()
+                    output.redo()
+                }
+            },
             Kirigami.Action {
                 enabled: !document.isNewFile
-                text: i18n("Copy contents")
-                iconName: "edit-copy"
+                text: qsTr("Copy Contents")
+                icon.name: "edit-copy"
                 shortcut: StandardKey.Copy
                 onTriggered: document.copy()
-                //{
-                    //showPassiveNotification("Not implemented");
-                //}
             }
         ]
         ColumnLayout {
@@ -134,7 +130,7 @@ Kirigami.ApplicationWindow {
                 columns: parent.portrait ? 1 : 2
                 Label {
                     id: labelMime
-                    text: i18n("MIME:")
+                    text: qsTr("MIME:")
                 }
                 TextArea {
                     id: mime
@@ -167,7 +163,7 @@ Kirigami.ApplicationWindow {
                     SplitView.preferredHeight: parent.height / 2 //- labelCode.height
                     Label {
                         id: labelCode
-                        text: "Clipboard contents:"
+                        text: "Raw Clipboard Contents:"
                     }
                     Flickable {
                         id: codeFlickable
@@ -187,7 +183,7 @@ Kirigami.ApplicationWindow {
                             text: ""
                             selectByMouse: true
                             font.pixelSize: 12
-                            Keys.onPressed: {
+                            Keys.onPressed: (event) => {
                                 switch (event.key) {
                                     case Qt.Key_V:
                                         if (event.modifiers & Qt.ControlModifier)
@@ -214,7 +210,7 @@ Kirigami.ApplicationWindow {
                     SplitView.preferredHeight: parent.height / 2 //- labelPreview.height
                     Label {
                         id: labelPreview
-                        text: "Content preview:"
+                        text: "Contents Preview:"
                     }
                     Flickable {
                         flickableDirection: Flickable.VerticalFlick
@@ -272,14 +268,13 @@ Kirigami.ApplicationWindow {
 
         FileDialog {
             id: saveDialog
-            selectExisting: false
             defaultSuffix: nameFilters[0]
             nameFilters: [
-                i18n("Plain Text (TXT)") + "(*.txt *.text *.TXT *.TEXT)",
-                i18n("All Formats") + "(*.*)"
+                qsTr("Plain Text (TXT)") + "(*.txt *.text *.TXT *.TEXT)",
+                qsTr("All Formats") + "(*.*)"
             ]
-            selectedNameFilter: nameFilters[0]
-            folder: shortcuts.documents
+            selectedNameFilter.index: 0
+            currentFolder: StandardPaths.standardLocations(StandardPaths.DocumentsLocation)[0]
             onAccepted: {
                 document.saveAs(saveDialog.fileUrl)
                 document.isNewFile = false

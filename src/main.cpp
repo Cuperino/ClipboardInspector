@@ -3,15 +3,14 @@
     SPDX-FileCopyrightText: 2022 Javier O. Cordero Pérez <javiercorderoperez@gmail.com>
 */
 
-#include <KLocalizedContext>
-#include <QApplication>
+#include <QGuiApplication>
 #include <QQmlApplicationEngine>
 #include <QUrl>
 #include <QIcon>
 #include <QtQml>
 #include "document/documenthandler.h"
 
-#if defined(KF5Crash_FOUND)
+#if defined(KF6Crash_FOUND)
 #include <KCrash>
 #endif
 
@@ -19,10 +18,9 @@
 
 Q_DECL_EXPORT int main(int argc, char *argv[])
 {
-    QGuiApplication::setAttribute(Qt::AA_EnableHighDpiScaling);
-    QApplication app(argc, argv);
+    QGuiApplication app(argc, argv);
 
-#if defined(KF5Crash_FOUND)
+#if defined(KF6Crash_FOUND)
     KCrash::initialize();
     KCrash::setFlags(KCrash::AutoRestart);
 #endif
@@ -32,12 +30,10 @@ Q_DECL_EXPORT int main(int argc, char *argv[])
     QCoreApplication::setOrganizationDomain(QString::fromStdString(PROGRAM_URI));
     QCoreApplication::setApplicationName(QString::fromStdString("Clipboard Inspector"));
 
-
     qmlRegisterType<DocumentHandler>("com.cuperino.clipboardinspector.document", 1, 0, "DocumentHandler");
 
     QQmlApplicationEngine engine;
 
-    engine.rootContext()->setContextObject(new KLocalizedContext(&engine));
     engine.load(QUrl(QStringLiteral("qrc:///main.qml")));
 
     if (engine.rootObjects().isEmpty()) {

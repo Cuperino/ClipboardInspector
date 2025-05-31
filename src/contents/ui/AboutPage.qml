@@ -1,12 +1,13 @@
 /*
     SPDX-License-Identifier: GPL-2.0-or-later
-    SPDX-FileCopyrightText: 2022 Javier O. Cordero Pérez <javiercorderoperez@gmail.com>
+    SPDX-FileCopyrightText: 2022, 2025 Javier O. Cordero Pérez <javiercorderoperez@gmail.com>
 */
 
-import org.kde.kirigami 2.9 as Kirigami
+import org.kde.kirigami as Kirigami
 
 Kirigami.AboutPage {
-    //globalToolBarStyle: Kirigami.ApplicationHeaderStyle.Titles
+    // globalToolBarStyle: Kirigami.ApplicationHeaderStyle.Titles
+    title: qsTr("Cuperino's ClipboardInspector")
     getInvolvedUrl: "https://l10n.cuperino.com/"
     aboutData: {
         "displayName" : "Clipboard Inspector",

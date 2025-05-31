@@ -1,7 +1,9 @@
 # SPDX-License-Identifier: GPL-2.0-or-later
-# SPDX-FileCopyrightText: 2022 Javier O. Cordero Pérez <javiercorderoperez@gmail.com>
+# SPDX-FileCopyrightText: 2022, 2025 Javier O. Cordero Pérez <javiercorderoperez@gmail.com>
 
-cmake_minimum_required(VERSION 3.16)
+cmake_minimum_required(VERSION 3.22)
+
+include(FetchContent)
 
 set(RELEASE_SERVICE_VERSION_MAJOR "1")
 set(RELEASE_SERVICE_VERSION_MINOR "0")
@@ -25,17 +27,10 @@ set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_AUTOMOC ON)
 set(CMAKE_AUTORCC ON)
 
-set(QT_DEFAULT_MAJOR_VERSION 5)
-set(QT_MIN_VERSION 5.15.2)
-# KF5 and ECM 5.68 for Ubuntu 20.04 based Snap package.
-# KF5 5.78 for Ubuntu 21.04 and Debian 11, which require no backporting
-# Use 5.83 ECM on Windows to make use of ecm_add_app_icon syntax
-if (WIN32)
-    set(ECM_MIN_VERSION 5.83.0)
-else()
-    set(ECM_MIN_VERSION 5.68.0)
-endif()
-set(KF_MIN_VERSION 5.68.0)
+set(QT_DEFAULT_MAJOR_VERSION 6)
+set(QT_MIN_VERSION 6.5.0)
+set(KF_MIN_VERSION 6.5.0)
+set(KF_PREFFERED_VERSION 6.10.0)
 if (APPLE)
     set(APPLE_SUPPRESS_X11_WARNING ON)
 endif()
@@ -86,15 +81,43 @@ endif()
 # Send compiled program and library binaries to "build/bin"
 set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/bin)
 
-find_package(ECM ${KF5_MIN_VERSION} REQUIRED NO_MODULE)
+find_package(ECM ${KF6_MIN_VERSION} REQUIRED NO_MODULE)
 set(CMAKE_MODULE_PATH ${ECM_MODULE_PATH})
 find_package(QT NAMES Qt6 Qt5 REQUIRED COMPONENTS Core)
 
-find_package(Qt${QT_VERSION_MAJOR} ${QT5_MIN_VERSION} REQUIRED NO_MODULE COMPONENTS Core Gui Qml QuickControls2 Svg)
-find_package(Qt${QT_VERSION_MAJOR} ${QT5_MIN_VERSION} NO_MODULE COMPONENTS QmlImportScanner QuickCompiler)
-find_package(KF5 ${KF5_MIN_VERSION} REQUIRED COMPONENTS Kirigami2 I18n CoreAddons SyntaxHighlighting)
-#find_package(KF5Crash ${KF5_MIN_VERSION} CONFIG QUIET)
-#    set_package_properties(KF5Crash PROPERTIES
+find_package(Qt${QT_VERSION_MAJOR} ${QT6_MIN_VERSION} REQUIRED NO_MODULE COMPONENTS Core Gui Qml Quick QuickControls2 Svg)
+if(WIN32 OR APPLE OR WASM)
+    set(BUILD_TESTING OFF)
+    FetchContent_Declare(
+      CoreAddons
+      GIT_REPOSITORY "${CMAKE_SOURCE_DIR}/3rdparty/kcoreaddons"
+      GIT_TAG        "v${KF_PREFFERED_VERSION}"
+      SOURCE_DIR submodules/kcoreaddons
+    )
+    FetchContent_MakeAvailable(CoreAddons)
+    FetchContent_Declare(
+      Kirigami
+      GIT_REPOSITORY "${CMAKE_SOURCE_DIR}/3rdparty/kirigami"
+      GIT_TAG        "v${KF_PREFFERED_VERSION}"
+      SOURCE_DIR submodules/kirigami
+    )
+    FetchContent_MakeAvailable(Kirigami)
+    FetchContent_Declare(
+      KF6SyntaxHighlighting
+      GIT_REPOSITORY "${CMAKE_SOURCE_DIR}/3rdparty/syntax-highlighting"
+      GIT_TAG        "v${KF_PREFFERED_VERSION}"
+      SOURCE_DIR submodules/syntax-highlighting
+    )
+    FetchContent_MakeAvailable(KF6SyntaxHighlighting)
+else()
+    find_package(KF6 ${KF_MIN_VERSION} REQUIRED COMPONENTS
+        Kirigami
+        CoreAddons
+        SyntaxHighlighting
+    )
+endif()
+#find_package(KF6Crash ${KF6_MIN_VERSION} CONFIG QUIET)
+#    set_package_properties(KF6Crash PROPERTIES
 #    DESCRIPTION "Graceful handling of application crashes."
 #    TYPE OPTIONAL
 #)
@@ -115,7 +138,6 @@ include(ECMPoQmTools)
 include(FeatureSummary)
 
 add_subdirectory(src)
-ki18n_install(po)
 
 if (WIN32 OR UNIX) # AND NOT ANDROID
     install(FILES com.cuperino.clipboardinspector.appdata.xml DESTINATION ${KDE_INSTALL_METAINFODIR})
